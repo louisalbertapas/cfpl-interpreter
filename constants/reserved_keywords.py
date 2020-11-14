@@ -6,12 +6,16 @@ RESERVED_KEYWORDS = {
     'STOP': Token(STOP, STOP),
     'VAR': Token(VAR, VAR),
     'AS': Token(AS, AS),
-    'OUTPUT': Token(OUTPUT, OUTPUT),
     'INT': Token(INT, INT),
     'CHAR': Token(CHAR, CHAR),
     'BOOL': Token(BOOL, BOOL),
     'FLOAT': Token(FLOAT, FLOAT),
+    'INPUT': Token(INPUT, INPUT),
+    'OUTPUT': Token(OUTPUT, OUTPUT),
     'AND': Token(AND, AND),
     'OR': Token(OR, OR),
     'NOT': Token(NOT, NOT),
+    'IF': Token(IF, IF),
+    'ELSE' : Token(ELSE, ELSE),
+    'WHILE' : Token(WHILE, WHILE)
 }
