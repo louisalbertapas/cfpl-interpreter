@@ -32,6 +32,13 @@ class Interpreter(NodeVisitor):
         elif node.op.type == DIV:
             return self.visit(node.left) / self.visit(node.right)
 
+    def visit_UnaryOp(self, node):
+        op = node.op.type
+        if op == PLUS:
+            return self.visit(node.expr) * 1
+        elif op == MINUS:
+            return self.visit(node.expr) * -1
+
     def visit_Num(self, node):
         return node.value
 

@@ -29,10 +29,26 @@ class Parser(object):
             self.error()
 
     def factor(self):
-        """factor : INT_CONST | LEFT_PAREN expr RIGHT_PAREN"""
+        """factor : PLUS factor
+                  | MINUS factor
+                  | INT_CONST
+                  | FLOAT_CONST
+                  | LEFT_PAREN expr RIGHT_PAREN
+        """
         token = self.current_token
-        if token.type == INT_CONST:
+        if token.type == PLUS:
+            self.consume(PLUS)
+            node = UnaryOp(token, self.factor())
+            return node
+        elif token.type == MINUS:
+            self.consume(MINUS)
+            node = UnaryOp(token, self.factor())
+            return node
+        elif token.type == INT_CONST:
             self.consume(INT_CONST)
+            return Num(token)
+        elif token.type == FLOAT_CONST:
+            self.consume(FLOAT_CONST)
             return Num(token)
         elif token.type == LEFT_PAREN:
             self.consume(LEFT_PAREN)
