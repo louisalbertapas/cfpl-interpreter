@@ -5,6 +5,7 @@ Author:         Louis Albert Apas (louisalbertapas25@gmail.com)
 
 Copyright 2020
 """
+from cfpl.AbstractSyntaxTree import BinOp, UnaryOp, Char, Bool
 from constants.reserved_keywords import *
 from constants.debug import *
 
@@ -35,10 +36,14 @@ class Interpreter(NodeVisitor):
         # Check if name / ID exists in the SYMBOL_TABLE_TYPE
         if name in self.SYMBOL_TABLE_TYPE:
             if self.SYMBOL_TABLE_TYPE[name] == INT:
+                try:
+                    value = int(value)
+                except ValueError:
+                    raise ValueError('Value ' + repr(value) + ' is not an INT type')
                 if isinstance(value, int):
                     self.SYMBOL_TABLE_VALUE[name] = value
                 else:
-                    raise NameError('Value ' + repr(value) + ' is not an INT type')
+                    raise ValueError('Value ' + repr(value) + ' is not an INT type')
             elif self.SYMBOL_TABLE_TYPE[name] == FLOAT:
                 if isinstance(value, float):
                     self.SYMBOL_TABLE_VALUE[name] = value
@@ -70,6 +75,8 @@ class Interpreter(NodeVisitor):
             return self.visit(node.left) * self.visit(node.right)
         elif node.op.type == DIV:
             return self.visit(node.left) / self.visit(node.right)
+        elif node.op.type == MOD:
+            return self.visit(node.left) % self.visit(node.right)
 
     def visit_unary_op(self, node):
         op = node.op.type
@@ -79,6 +86,12 @@ class Interpreter(NodeVisitor):
             return self.visit(node.expr) * -1
 
     def visit_num(self, node):
+        return node.value
+
+    def visit_char(self, node):
+        return node.value
+
+    def visit_bool(self, node):
         return node.value
 
     def visit_program_start(self, node):
@@ -97,6 +110,18 @@ class Interpreter(NodeVisitor):
                 default_value = ''
             elif node.var_type_node.value == BOOL:
                 default_value = 'FALSE'
+        else:
+            node_default_value = node.var_id_node.default_value
+            if type(node_default_value) == BinOp:
+                default_value = self.visit_bin_op(node_default_value)
+            elif type(node_default_value) == UnaryOp:
+                default_value = self.visit_unary_op(node_default_value)
+            elif type(node_default_value) == Char:
+                default_value = self.visit_char(node_default_value)
+            elif type(node_default_value) == Bool:
+                default_value = self.visit_bool(node_default_value)
+            else:
+                default_value = node_default_value.value
 
         # Add to the SYMBOL_TABLE_TYPE the var_id and its corresponding var_type
         self.SYMBOL_TABLE_TYPE[node.var_id_node.value] = node.var_type_node.value

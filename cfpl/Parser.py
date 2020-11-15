@@ -33,6 +33,8 @@ class Parser(object):
                   | MINUS factor
                   | INT_CONST
                   | FLOAT_CONST
+                  | CHAR_CONST
+                  | BOOL_CONST
                   | LEFT_PAREN expr RIGHT_PAREN
         """
         token = self.current_token
@@ -50,6 +52,12 @@ class Parser(object):
         elif token.type == FLOAT_CONST:
             self.consume(FLOAT_CONST)
             return Num(token)
+        elif token.type == CHAR_CONST:
+            self.consume(CHAR_CONST)
+            return Char(token)
+        elif token.type == BOOL_CONST:
+            self.consume(BOOL_CONST)
+            return Bool(token)
         elif token.type == LEFT_PAREN:
             self.consume(LEFT_PAREN)
             node = self.expr()
@@ -57,15 +65,17 @@ class Parser(object):
             return node
 
     def term(self):
-        """term : factor ((MUL | DIV) factor)*"""
+        """term : factor ((MUL | DIV | MOD) factor)*"""
         node = self.factor()
 
-        while self.current_token.type in (MUL, DIV):
+        while self.current_token.type in (MUL, DIV, MOD):
             token = self.current_token
             if token.type == MUL:
                 self.consume(MUL)
             elif token.type == DIV:
                 self.consume(DIV)
+            elif token.type == MOD:
+                self.consume(MOD)
 
             node = BinOp(left=node, op=token, right=self.factor())
 
@@ -75,7 +85,13 @@ class Parser(object):
         """
         expr   : term ((PLUS | MINUS) term)*
         term   : factor ((MUL | DIV) factor)*
-        factor : INT_CONST | LEFT_PAREN expr RIGHT_PAREN
+        factor : PLUS factor
+                  | MINUS factor
+                  | INT_CONST
+                  | FLOAT_CONST
+                  | CHAR_CONST
+                  | BOOL_CONST
+                  | LEFT_PAREN expr RIGHT_PAREN
         """
         node = self.term()
 
@@ -128,12 +144,28 @@ class Parser(object):
         var_id_nodes = [node]
         self.consume(ID)
 
+        # Check if current token type is ASSIGN
+        if self.current_token.type == ASSIGN:
+            self.consume(ASSIGN)
+            node.default_value = self.expr()
+            # Syntax error e.g VAR a= AS INT
+            if node.default_value is None:
+                self.error()
+
         # Loop to create nodes for other declaration (if there is)
         while self.current_token.type == COMMA:
             self.consume(COMMA)
             node = VariableId(self.current_token)
             var_id_nodes.append(node)
             self.consume(ID)
+
+            # Check if current token type is ASSIGN
+            if self.current_token.type == ASSIGN:
+                self.consume(ASSIGN)
+                node.default_value = self.expr()
+                # Syntax error e.g VAR a= AS INT
+                if node.default_value is None:
+                    self.error()
 
         # Expect for next token type to be "AS"
         self.consume(AS)

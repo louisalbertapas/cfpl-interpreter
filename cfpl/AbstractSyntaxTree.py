@@ -33,6 +33,20 @@ class Num(AST):
         self.value = token.value
 
 
+class Char(AST):
+    def __init__(self, token):
+        self.name = "char"
+        self.token = token
+        self.value = token.value
+
+
+class Bool(AST):
+    def __init__(self, token):
+        self.name = "bool"
+        self.token = token
+        self.value = token.value
+
+
 class ProgramStart(AST):
     """
     ProgramStart node indicates the start of the program
