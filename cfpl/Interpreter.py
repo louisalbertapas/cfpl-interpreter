@@ -91,6 +91,9 @@ class Interpreter(NodeVisitor):
         elif op == MINUS:
             return self.visit(node.expr) * -1
 
+    def visit_no_op(self, node):
+        pass
+
     def visit_num(self, node):
         return node.value
 
@@ -111,6 +114,12 @@ class Interpreter(NodeVisitor):
     def visit_program_start(self, node):
         for declaration in node.declarations:
             self.visit(declaration)
+        self.visit(node.compound_statements)
+
+    def visit_compound_statements(self, node):
+        for child in node.children:
+            if child is not None:
+                self.visit(child)
 
     def visit_variable_declaration(self, node):
         if node.var_id_node.value in self.SYMBOL_TABLE_TYPE:

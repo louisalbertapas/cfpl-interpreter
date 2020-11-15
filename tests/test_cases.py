@@ -18,6 +18,8 @@ VAR abc, b, c AS INT
 VAR a AS FLOAT
 VAR ch1, ch2 AS CHAR
 VAR t,f AS BOOL
+START
+STOP
 """
 
 test_1_assert_1 = {'abc': 'INT', 'b': 'INT', 'c': 'INT', 'a': 'FLOAT', 'ch1': 'CHAR', 'ch2': 'CHAR', 't': 'BOOL', 'f': 'BOOL'}
@@ -31,6 +33,8 @@ VAR x=25%5, y=24/2, z=12*3 AS INT
 VAR abc=(1+2.0) * 6, b=-2.2, c=+3/2 AS FLOAT
 VAR ch='c', ch2, ch3='d' AS CHAR
 VAR t="TRUE", f AS BOOL
+START
+STOP
 """
 
 test_2_assert_1 = {'x': 'INT', 'y': 'INT', 'z': 'INT', 'abc': 'FLOAT', 'b': 'FLOAT', 'c': 'FLOAT', 'ch': 'CHAR',
@@ -47,9 +51,28 @@ VAR x=25+2, y=x%3, z=12*3 AS INT
 VAR abc=(1+2.0) * 6, b=-2.2, c=+3/2, d=abc+x AS FLOAT
 VAR ch='c', ch2, ch3=ch AS CHAR
 VAR t="TRUE", f=t AS BOOL
+START
+STOP
 """
 
 test_3_assert_1 = {'x': 'INT', 'y': 'INT', 'z': 'INT', 'abc': 'FLOAT', 'b': 'FLOAT', 'c': 'FLOAT', 'd': 'FLOAT',
                    'ch': 'CHAR', 'ch2': 'CHAR', 'ch3': 'CHAR', 't': 'BOOL', 'f': 'BOOL'}
 test_3_assert_2 = {'x': 27, 'y': 0, 'z': 36, 'abc': 18.0, 'b': -2.2, 'c': 1.5, 'd': 45.0, 'ch': 'c',
                    'ch2': '', 'ch3': 'c', 't': True, 'f': True}
+
+
+"""
+testcase 4
+"""
+test_4 = """
+* my first program in CFPL
+VAR abc, b, c AS INT
+VAR x, w_23='w' AS CHAR
+VAR t="TRUE" AS BOOL
+START
+* this is a comment
+STOP
+"""
+
+test_4_assert_1 = {'abc': 'INT', 'b': 'INT', 'c': 'INT', 'x': 'CHAR', 'w_23': 'CHAR', 't': 'BOOL'}
+test_4_assert_2 = {'abc': 0, 'b': 0, 'c': 0, 'x': '', 'w_23': 'w', 't': True}

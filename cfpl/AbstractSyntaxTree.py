@@ -26,6 +26,11 @@ class UnaryOp(AST):
         self.expr = expr
 
 
+class NoOp(AST):
+    def __init__(self):
+        self.name = "no_op"
+
+
 class Num(AST):
     def __init__(self, token):
         self.name = "num"
@@ -51,9 +56,10 @@ class ProgramStart(AST):
     """
     ProgramStart node indicates the start of the program
     """
-    def __init__(self, declarations):
+    def __init__(self, declarations, compound_statements):
         self.name = "program_start"
         self.declarations = declarations
+        self.compound_statements = compound_statements
 
 
 class VariableId(AST):
@@ -86,3 +92,12 @@ class VariableDeclaration(AST):
         self.name = "variable_declaration"
         self.var_id_node = var_id_node
         self.var_type_node = var_type_node
+
+
+class CompoundStatements(AST):
+    """
+    CompoundStatement node takes all kind of statements node inside a START STOP block
+    """
+    def __init__(self):
+        self.name = "compound_statements"
+        self.children = []

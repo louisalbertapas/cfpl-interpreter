@@ -36,14 +36,16 @@ class Parser(object):
         self.consume(ID)
         return node
 
+    def empty(self):
+        """
+        Empty. No operation
+        """
+        return NoOp()
+
     def factor(self):
-        """factor : PLUS factor
-                  | MINUS factor
-                  | INT_CONST
-                  | FLOAT_CONST
-                  | CHAR_CONST
-                  | BOOL_CONST
-                  | LEFT_PAREN expr RIGHT_PAREN
+        """
+        factor : PLUS factor | MINUS factor | INT_CONST | FLOAT_CONST
+                | CHAR_CONST | BOOL_CONST | LEFT_PAREN expr RIGHT_PAREN | variable
         """
         token = self.current_token
         if token.type == PLUS:
@@ -75,7 +77,9 @@ class Parser(object):
             return self.variable()
 
     def term(self):
-        """term : factor ((MUL | DIV | MOD) factor)*"""
+        """
+        term : factor ((MUL | DIV | MOD) factor)*
+        """
         node = self.factor()
 
         while self.current_token.type in (MUL, DIV, MOD):
@@ -94,14 +98,6 @@ class Parser(object):
     def expr(self):
         """
         expr   : term ((PLUS | MINUS) term)*
-        term   : factor ((MUL | DIV) factor)*
-        factor : PLUS factor
-                  | MINUS factor
-                  | INT_CONST
-                  | FLOAT_CONST
-                  | CHAR_CONST
-                  | BOOL_CONST
-                  | LEFT_PAREN expr RIGHT_PAREN
         """
         node = self.term()
 
@@ -115,6 +111,66 @@ class Parser(object):
             node = BinOp(left=node, op=token, right=self.term())
 
         return node
+
+    def statement(self):
+        """
+        A statement rule is a single statement inside the statements. A statement can be an assignment_statement
+        or an output_statement
+
+        statement : assignment_statement | output_statement | empty
+
+        --------- assignment_statement ------------->
+            |                               ^
+            |                               |
+            --------output_statement---------
+            |                               |
+            |                               |
+            ------------empty---------------
+        """
+        node = self.empty()
+        return node
+
+    def statements(self):
+        """
+        A statements rule is a list or group of statement within a compound statements block
+
+        statements : statement | statement statements
+
+        ----------- statement ----------->
+            ^                   |
+            |                   |
+            ---------------------
+        """
+        node = self.statement()
+        results = [node]
+        while self.current_token.type != STOP:
+            if self.current_token.type == EOF:
+                break
+            statement = self.statement()
+            results.append(statement)
+            if statement.name == 'NoOp':
+                break
+        return results
+
+    def compound_statements(self):
+        """
+        A compound_statements rule is the start point for the main program after the variable declaration.
+        A compound statement starts with START and ends with STOP with statements in between them as written
+        in the rule below.
+
+        compound_statements : START statements STOP
+
+        START ------> statements ------> STOP
+        """
+        self.consume(START)
+        nodes = self.statements()
+        self.consume(STOP)
+
+        root = CompoundStatements()
+        for node in nodes:
+            root.children.append(node)
+
+        return root
 
     def variable_type(self):
         """
@@ -215,10 +271,34 @@ class Parser(object):
         """
         A code_block rule starts with variable declarations as written in the rule below.
 
-        code_block : variable_declarations
+        code_block : variable_declarations compound_statements
+
+        variable_declarations : VAR (variable_declaration)+
+
+        variable_declaration : ID (COMMA ID [= default_value])* AS variable_type
+
+        variable_type : INT | FLOAT | CHAR | BOOL
+
+        compound_statements : START statements STOP
+
+        statements : statement | statement statements
+
+        statement : assignment_statement | output_statement
+
+        assignment_statement : variable ASSIGN expr
+
+        expr : term ((PLUS | MINUS) term)*
+
+        term : factor ((MUL | DIV | MOD) factor)*
+
+        factor : PLUS factor | MINUS factor | INT_CONST | FLOAT_CONST
+                | CHAR_CONST | BOOL_CONST | LEFT_PAREN expr RIGHT_PAREN | variable
+
+        variable: ID
         """
         variable_declarations_nodes = self.variable_declarations()
-        node = ProgramStart(variable_declarations_nodes)
+        compound_statements_nodes = self.compound_statements()
+        node = ProgramStart(variable_declarations_nodes, compound_statements_nodes)
         return node
 
     def parse(self):
