@@ -90,5 +90,94 @@ class Parser(object):
 
         return node
 
+    def variable_type(self):
+        """
+        A variable_type is a terminal rule. It indicates the end of a single variable_declaration
+
+        variable_type : INT | FLOAT | CHAR | BOOL
+        """
+        token = self.current_token
+        if self.current_token.type == INT:
+            self.consume(INT)
+        elif self.current_token.type == FLOAT:
+            self.consume(FLOAT)
+        elif self.current_token.type == CHAR:
+            self.consume(CHAR)
+        elif self.current_token.type == BOOL:
+            self.consume(BOOL)
+
+        node = VariableType(token)
+        return node
+
+    def variable_declaration(self):
+        """
+        A variable declaration rule should start with the variable name (ID) and optionally
+        followed by COMMA and another ID. Default value can also be explicitly specified.
+        It should end with AS and a variable_type as written in the rule below.
+
+        variable_declaration : ID (COMMA ID [= default_value])* AS variable_type
+
+        ------- ID[=default_value]--------> AS --------> variable_type
+                ^                   |
+                |                   |
+                --------COMMA-------
+        """
+
+        # Create a node for the first Variable ID
+        node = VariableId(self.current_token)
+        var_id_nodes = [node]
+        self.consume(ID)
+
+        # Loop to create nodes for other declaration (if there is)
+        while self.current_token.type == COMMA:
+            self.consume(COMMA)
+            node = VariableId(self.current_token)
+            var_id_nodes.append(node)
+            self.consume(ID)
+
+        # Expect for next token type to be "AS"
+        self.consume(AS)
+
+        # Create a node for the variable type
+        var_type_node = self.variable_type()
+
+        # Create a variable declaration nodes using var_node and type_node
+        variable_declaration = []
+        for var_id_node in var_id_nodes:
+            variable_declaration.append(VariableDeclaration(var_id_node, var_type_node))
+
+        return variable_declaration
+
+    def variable_declarations(self):
+        """
+        A variable_declarations rule should start with VAR and followed by one or more
+        variable_declaration as written in the rule below.
+
+        variable_declarations : VAR (variable_declaration)+
+
+        VAR ----> variable_declaration ------
+             ^                          |
+             |                          |
+             ----------------------------
+        """
+        declarations = []
+        while self.current_token.type == VAR:
+            self.consume(VAR)
+            if self.current_token.type == ID:
+                var_declaration = self.variable_declaration()
+                declarations.extend(var_declaration)
+
+        return declarations
+
+    def program_start(self):
+        """
+        A code_block rule starts with variable declarations as written in the rule below.
+
+        code_block : variable_declarations
+        """
+        variable_declarations_nodes = self.variable_declarations()
+        node = ProgramStart(variable_declarations_nodes)
+        return node
+
     def parse(self):
-        return self.expr()
+        return self.program_start()
