@@ -37,3 +37,19 @@ test_2_assert_1 = {'x': 'INT', 'y': 'INT', 'z': 'INT', 'abc': 'FLOAT', 'b': 'FLO
                    'ch2': 'CHAR', 'ch3': 'CHAR', 't': 'BOOL', 'f': 'BOOL'}
 test_2_assert_2 = {'x': 0, 'y': 12, 'z': 36, 'abc': 18.0, 'b': -2.2, 'c': 1.5, 'ch': 'c',
                    'ch2': '', 'ch3': 'd', 't': True, 'f': False}
+
+
+"""
+testcase 3
+"""
+test_3 = """
+VAR x=25+2, y=x%3, z=12*3 AS INT
+VAR abc=(1+2.0) * 6, b=-2.2, c=+3/2, d=abc+x AS FLOAT
+VAR ch='c', ch2, ch3=ch AS CHAR
+VAR t="TRUE", f=t AS BOOL
+"""
+
+test_3_assert_1 = {'x': 'INT', 'y': 'INT', 'z': 'INT', 'abc': 'FLOAT', 'b': 'FLOAT', 'c': 'FLOAT', 'd': 'FLOAT',
+                   'ch': 'CHAR', 'ch2': 'CHAR', 'ch3': 'CHAR', 't': 'BOOL', 'f': 'BOOL'}
+test_3_assert_2 = {'x': 27, 'y': 0, 'z': 36, 'abc': 18.0, 'b': -2.2, 'c': 1.5, 'd': 45.0, 'ch': 'c',
+                   'ch2': '', 'ch3': 'c', 't': True, 'f': True}

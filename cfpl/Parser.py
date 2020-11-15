@@ -28,6 +28,14 @@ class Parser(object):
         else:
             self.error()
 
+    def variable(self):
+        """
+        variable : ID
+        """
+        node = VariableId(self.current_token)
+        self.consume(ID)
+        return node
+
     def factor(self):
         """factor : PLUS factor
                   | MINUS factor
@@ -63,6 +71,8 @@ class Parser(object):
             node = self.expr()
             self.consume(RIGHT_PAREN)
             return node
+        else:
+            return self.variable()
 
     def term(self):
         """term : factor ((MUL | DIV | MOD) factor)*"""

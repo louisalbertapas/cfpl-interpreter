@@ -5,7 +5,7 @@ Author:         Louis Albert Apas (louisalbertapas25@gmail.com)
 
 Copyright 2020
 """
-from cfpl.AbstractSyntaxTree import BinOp, UnaryOp, Char, Bool
+from cfpl.AbstractSyntaxTree import BinOp, UnaryOp, Char, Bool, VariableId
 from constants.reserved_keywords import *
 from constants.debug import *
 
@@ -45,6 +45,10 @@ class Interpreter(NodeVisitor):
                 else:
                     raise ValueError('Value ' + repr(value) + ' is not an INT type')
             elif self.SYMBOL_TABLE_TYPE[name] == FLOAT:
+                try:
+                    value = float(value)
+                except ValueError:
+                    raise ValueError('Value ' + repr(value) + ' is not a FLOAT type')
                 if isinstance(value, float):
                     self.SYMBOL_TABLE_VALUE[name] = value
                 else:
@@ -55,14 +59,16 @@ class Interpreter(NodeVisitor):
                 else:
                     raise NameError('Value ' + repr(value) + ' is not a CHAR type')
             elif self.SYMBOL_TABLE_TYPE[name] == BOOL:
-                if value in ['TRUE', 'FALSE']:
+                if isinstance(value, bool):
+                    self.SYMBOL_TABLE_VALUE[name] = value
+                elif value in ['TRUE', 'FALSE']:
                     if value == 'TRUE':
                         value = True
                     else:
                         value = False
                     self.SYMBOL_TABLE_VALUE[name] = value
                 else:
-                    raise NameError('Value ' + repr(value) + ' is not a BOOL type')
+                    raise ValueError('Value ' + repr(value) + ' is not a BOOL type')
             else:
                 raise NameError('Unknown data type ' + self.SYMBOL_TABLE_TYPE[name])
 
@@ -94,6 +100,14 @@ class Interpreter(NodeVisitor):
     def visit_bool(self, node):
         return node.value
 
+    def visit_variable_id(self, node):
+        try:
+            variable_id = node.value
+            variable_value = self.SYMBOL_TABLE_VALUE[variable_id]
+            return variable_value
+        except KeyError:
+            raise NameError('Name ' + repr(variable_id) + ' is not defined')
+
     def visit_program_start(self, node):
         for declaration in node.declarations:
             self.visit(declaration)
@@ -120,8 +134,13 @@ class Interpreter(NodeVisitor):
                 default_value = self.visit_char(node_default_value)
             elif type(node_default_value) == Bool:
                 default_value = self.visit_bool(node_default_value)
+            elif type(node_default_value) == VariableId:
+                default_value = self.visit_variable_id(node_default_value)
             else:
+                # VariableId
                 default_value = node_default_value.value
+                print(node.var_type_node.token.value)
+                print(node.var_type_node.value)
 
         # Add to the SYMBOL_TABLE_TYPE the var_id and its corresponding var_type
         self.SYMBOL_TABLE_TYPE[node.var_id_node.value] = node.var_type_node.value
