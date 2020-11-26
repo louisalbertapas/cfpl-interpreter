@@ -97,19 +97,35 @@ class Parser(object):
 
     def expr(self):
         """
-        expr   : term ((PLUS | MINUS) term)*
+        expr   : term ((PLUS | MINUS | ASSIGN) term)*
         """
         node = self.term()
 
-        while self.current_token.type in (PLUS, MINUS):
+        while self.current_token.type in (PLUS, MINUS, ASSIGN):
             token = self.current_token
             if token.type == PLUS:
                 self.consume(PLUS)
             elif token.type == MINUS:
                 self.consume(MINUS)
+            elif token.type == ASSIGN:
+                self.consume(ASSIGN)
 
             node = BinOp(left=node, op=token, right=self.term())
 
+        return node
+
+    def assignment_statement(self):
+        """
+        An assignment statement rule assigns an expression to a variable
+
+        assignment_statement : variable ASSIGN expr
+        """
+
+        left = self.variable()
+        token = self.current_token
+        self.consume(ASSIGN)
+        right = self.expr()
+        node = Assign(left, token, right)
         return node
 
     def statement(self):
@@ -127,7 +143,10 @@ class Parser(object):
             |                               |
             ------------empty---------------
         """
-        node = self.empty()
+        if self.current_token.type == ID:
+            node = self.assignment_statement()
+        else:
+            node = self.empty()
         return node
 
     def statements(self):

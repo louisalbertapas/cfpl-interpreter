@@ -76,3 +76,22 @@ STOP
 
 test_4_assert_1 = {'abc': 'INT', 'b': 'INT', 'c': 'INT', 'x': 'CHAR', 'w_23': 'CHAR', 't': 'BOOL'}
 test_4_assert_2 = {'abc': 0, 'b': 0, 'c': 0, 'x': '', 'w_23': 'w', 't': True}
+
+"""
+testcase 5
+"""
+test_5 = """
+* my first program in CFPL
+VAR abc, b, c AS INT
+VAR x, w_23='w' AS CHAR
+VAR t="TRUE" AS BOOL
+START
+* this is a comment
+abc=b=10
+w_23='a'
+x=w_23
+STOP
+"""
+
+test_5_assert_1 = {'abc': 'INT', 'b': 'INT', 'c': 'INT', 'x': 'CHAR', 'w_23': 'CHAR', 't': 'BOOL'}
+test_5_assert_2 = {'abc': 10, 'b': 10, 'c': 0, 'x': 'a', 'w_23': 'a', 't': True}

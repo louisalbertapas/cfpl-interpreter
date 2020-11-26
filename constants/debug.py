@@ -4,7 +4,7 @@ Contains debug modes used for debugging purposes
 
 # Print tokens / lexeme only
 # Turns on verbose printing of every tokens
-print_token = False
+print_token = True
 
 # Turns on verbose debugging logs
 debug = True
@@ -14,3 +14,4 @@ test_1_assert = True
 test_2_assert = True
 test_3_assert = True
 test_4_assert = True
+test_5_assert = True

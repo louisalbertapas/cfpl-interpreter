@@ -83,6 +83,18 @@ class Interpreter(NodeVisitor):
             return self.visit(node.left) / self.visit(node.right)
         elif node.op.type == MOD:
             return self.visit(node.left) % self.visit(node.right)
+        elif node.op.type == ASSIGN:
+            value = self.visit(node.right)
+            if node.value is None:
+                node.value = value
+            if node.left.name == 'bin_op':
+                node.left.value = node.value
+                return self.visit(node.left)
+            if node.left.name == 'variable_id' and node.left.value in self.SYMBOL_TABLE_VALUE:
+                self.add_variable_value_to_symbol_table(node.left.value, node.value)
+            if type(node.right).__name__ == 'variable_id' and node.right.value in self.SYMBOL_TABLE_VALUE:
+                self.add_variable_value_to_symbol_table(node.right.value, node.value)
+            return value
 
     def visit_unary_op(self, node):
         op = node.op.type
@@ -120,6 +132,18 @@ class Interpreter(NodeVisitor):
         for child in node.children:
             if child is not None:
                 self.visit(child)
+
+    def visit_assign(self, node):
+        values = [node.left]
+        if type(node.left.value).__name__ == 'list':
+            values = []
+            for val in node.left.value:
+                values.append(val)
+        for val in values:
+            var_name = val.value
+            if val.token.type != STRING_CONST and var_name not in self.SYMBOL_TABLE_VALUE:
+                raise NameError('Name ' + repr(var_name) + ' is not defined')
+            self.add_variable_value_to_symbol_table(var_name, self.visit(node.right))
 
     def visit_variable_declaration(self, node):
         if node.var_id_node.value in self.SYMBOL_TABLE_TYPE:

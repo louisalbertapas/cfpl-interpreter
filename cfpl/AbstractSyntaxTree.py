@@ -17,6 +17,7 @@ class BinOp(AST):
         self.left = left
         self.token = self.op = op
         self.right = right
+        self.value = None
 
 
 class UnaryOp(AST):
@@ -101,3 +102,14 @@ class CompoundStatements(AST):
     def __init__(self):
         self.name = "compound_statements"
         self.children = []
+
+
+class Assign(AST):
+    """
+    Assign takes a variable and an expression
+    """
+    def __init__(self, left, op, right):
+        self.name = "assign"
+        self.left = left
+        self.token = self.op = op
+        self.right = right
