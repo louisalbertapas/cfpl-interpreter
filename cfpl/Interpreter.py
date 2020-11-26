@@ -115,6 +115,9 @@ class Interpreter(NodeVisitor):
     def visit_bool(self, node):
         return node.value
 
+    def visit_string(self, node):
+        return node.value
+
     def visit_variable_id(self, node):
         try:
             variable_id = node.value
@@ -144,6 +147,35 @@ class Interpreter(NodeVisitor):
             if val.token.type != STRING_CONST and var_name not in self.SYMBOL_TABLE_VALUE:
                 raise NameError('Name ' + repr(var_name) + ' is not defined')
             self.add_variable_value_to_symbol_table(var_name, self.visit(node.right))
+
+    def visit_output(self, node):
+        output = ''
+        for val in node.value:
+            if val.name == 'variable_id':
+                if val.value not in self.SYMBOL_TABLE_VALUE:
+                    raise NameError('Name ' + repr(val.value) + ' is not defined')
+                val_name = val.value
+                val = self.SYMBOL_TABLE_VALUE[val_name]
+                data_type = self.SYMBOL_TABLE_TYPE[val_name]
+                if data_type == INT:
+                    val = int(val)
+                elif data_type == FLOAT:
+                    val = float(val)
+                elif data_type == CHAR:
+                    val = val[0] if len(val) > 0 else val
+                elif data_type == BOOL:
+                    if type(val) is bool:
+                        val = 'TRUE' if val else 'FALSE'
+                    val = str(val)
+                    if val not in ['TRUE', 'FALSE']:
+                        val = 'FALSE'
+                else:
+                    val = str(val)
+            else:
+                val = val.value
+            output += str(val)
+        print(output)
+        return node.value
 
     def visit_variable_declaration(self, node):
         if node.var_id_node.value in self.SYMBOL_TABLE_TYPE:

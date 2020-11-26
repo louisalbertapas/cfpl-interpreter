@@ -45,7 +45,8 @@ class Parser(object):
     def factor(self):
         """
         factor : PLUS factor | MINUS factor | INT_CONST | FLOAT_CONST
-                | CHAR_CONST | BOOL_CONST | LEFT_PAREN expr RIGHT_PAREN | variable
+                | CHAR_CONST | BOOL_CONST | LEFT_PAREN expr RIGHT_PAREN |
+                | SINGLE_QUOTE expr SINGLE_QUOTE | DOUBLE_QUOTE expr DOUBLE_QUOTE | variable
         """
         token = self.current_token
         if token.type == PLUS:
@@ -73,6 +74,15 @@ class Parser(object):
             node = self.expr()
             self.consume(RIGHT_PAREN)
             return node
+        elif token.type == CHAR_CONST:
+            self.consume(CHAR_CONST)
+            return Char(token)
+        elif token.type == STRING_CONST:
+            self.consume(STRING_CONST)
+            return String(token)
+        elif token.type == BOOL_CONST:
+            self.consume(BOOL_CONST)
+            return Bool(token)
         else:
             return self.variable()
 
@@ -114,6 +124,25 @@ class Parser(object):
 
         return node
 
+    def output_statement(self):
+        """
+        An output statement rule accepts an expr and can be optionally concatenated with another expr
+        using &
+        output_statement : expr (& expr)*
+        """
+        terms = []
+        current_pos = self.tokenizer.pos
+        while True:
+            if self.current_token.type == STRING_CONST:
+                terms.append(self.expr())
+            elif self.current_token.type == ID:
+                terms.append(self.variable())
+            if self.tokenizer.pos < current_pos or self.current_token.type != AMPERSAND:
+                break
+            if self.current_token.type == AMPERSAND:
+                self.consume(AMPERSAND)
+        return terms
+
     def assignment_statement(self):
         """
         An assignment statement rule assigns an expression to a variable
@@ -145,6 +174,11 @@ class Parser(object):
         """
         if self.current_token.type == ID:
             node = self.assignment_statement()
+        elif self.current_token.type == OUTPUT:
+            self.consume(OUTPUT)
+            self.consume(COLON)
+            self.current_token.value = self.output_statement()
+            node = Output(self.current_token)
         else:
             node = self.empty()
         return node

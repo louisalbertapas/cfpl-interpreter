@@ -53,6 +53,13 @@ class Bool(AST):
         self.value = token.value
 
 
+class String(AST):
+    def __init__(self, token):
+        self.name = "string"
+        self.token = token
+        self.value = token.value
+
+
 class ProgramStart(AST):
     """
     ProgramStart node indicates the start of the program
@@ -113,3 +120,13 @@ class Assign(AST):
         self.left = left
         self.token = self.op = op
         self.right = right
+
+
+class Output(AST):
+    """
+    Outputs an expression
+    """
+    def __init__(self, token):
+        self.name = "output"
+        self.token = token
+        self.value = token.value
