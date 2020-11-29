@@ -115,3 +115,19 @@ STOP
 
 test_6_assert_1 = {'abc': 'INT', 'b': 'INT', 'c': 'INT', 'x': 'CHAR', 'w_23': 'CHAR', 't': 'BOOL'}
 test_6_assert_2 = {'abc': 10, 'b': 10, 'c': 0, 'x': 'a', 'w_23': 'a', 't': True}
+
+"""
+testcase 7
+"""
+test_7 = """
+VAR xyz, abc=100 AS INT
+START
+xyz= ((abc *5)/10 + 10) * -1
+* xyz should have the value -60
+OUTPUT: "[[]" & xyz & "[]]"
+STOP
+
+"""
+
+test_7_assert_1 = {'xyz': 'INT', 'abc': 'INT'}
+test_7_assert_2 = {'xyz': -60, 'abc': 100}

@@ -16,3 +16,4 @@ test_3_assert = True
 test_4_assert = True
 test_5_assert = True
 test_6_assert = True
+test_7_assert = True
