@@ -1,0 +1,11 @@
+* my first program in CFPL
+VAR abc, b, c AS INT
+VAR x, w_23='w' AS CHAR
+VAR t="TRUE" AS BOOL
+START
+* this is a comment
+abc=b=10
+w_23='a'
+x=w_23
+OUTPUT: abc & "hi" & b & "#" & w_23 & "[#]"
+STOP

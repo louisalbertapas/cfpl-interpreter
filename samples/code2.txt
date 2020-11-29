@@ -1,0 +1,6 @@
+VAR xyz, abc=100 AS INT
+START
+xyz= ((abc *5)/10 + 10) * -1
+* xyz should have the value -60
+OUTPUT: "[[]" & xyz & "[]]"
+STOP

@@ -2,6 +2,9 @@
 Contains debug modes used for debugging purposes
 """
 
+# Turns on production mode
+production = True
+
 # Print tokens / lexeme only
 # Turns on verbose printing of every tokens
 print_token = False
