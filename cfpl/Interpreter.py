@@ -195,6 +195,22 @@ class Interpreter(NodeVisitor):
         print(output)
         return node.value
 
+    def visit_if_else(self, node):
+        bool_expr = self.visit(node.expr)
+        print(bool_expr)
+        if bool_expr and bool_expr != "FALSE":  # add additional checking if not FALSE
+            values = [node.value]
+            if type(node.value).__name__ == 'list':
+                values = []
+                for val in node.value:
+                    values.append(val)
+            for val in values:
+                self.visit(val)
+        else:
+            if node.else_token is not None:
+                self.visit(node.else_token)
+        return node.value
+
     def visit_variable_declaration(self, node):
         if node.var_id_node.value in self.SYMBOL_TABLE_TYPE:
             raise NameError("Redeclaration of variable " + repr(node.var_id_node.value))

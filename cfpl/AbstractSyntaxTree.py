@@ -130,3 +130,15 @@ class Output(AST):
         self.name = "output"
         self.token = token
         self.value = token.value
+
+
+class IfElse(AST):
+    """
+    IfElse contains the if block and the optional else block
+    """
+    def __init__(self, if_token, expr, else_token=None):
+        self.name = "if_else"
+        self.token = if_token
+        self.value = if_token.value
+        self.expr = expr
+        self.else_token = else_token

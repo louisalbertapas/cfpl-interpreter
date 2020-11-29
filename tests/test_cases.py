@@ -148,3 +148,35 @@ STOP
 
 test_8_assert_1 = {'a': 'INT', 'b': 'INT', 'c': 'INT', 'd': 'BOOL', 'e': 'BOOL'}
 test_8_assert_2 = {'a': 100, 'b': 200, 'c': 300, 'd': True, 'e': False}
+
+"""
+testcase 9
+"""
+test_9 = """
+VAR a=100, b=200, c=300 AS INT
+VAR d="FALSE", e="TRUE" AS BOOL
+START
+d = (a < b AND c <>200)
+e = NOT d
+IF (d)
+START
+OUTPUT: "IF BLOCK"
+STOP
+ELSE
+START
+OUTPUT: "ELSE BLOCK"
+STOP
+IF (c <> 300)
+START
+OUTPUT: "IF BLOCK"
+STOP
+ELSE
+START
+OUTPUT: "ELSE BLOCK"
+STOP
+STOP
+
+"""
+
+test_9_assert_1 = {'a': 'INT', 'b': 'INT', 'c': 'INT', 'd': 'BOOL', 'e': 'BOOL'}
+test_9_assert_2 = {'a': 100, 'b': 200, 'c': 300, 'd': True, 'e': False}

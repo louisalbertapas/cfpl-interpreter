@@ -191,12 +191,15 @@ class Parser(object):
         A statement rule is a single statement inside the statements. A statement can be an assignment_statement
         or an output_statement
 
-        statement : assignment_statement | output_statement | empty
+        statement : assignment_statement | output_statement | compound_statements | empty
 
         --------- assignment_statement ------------->
             |                               ^
             |                               |
             --------output_statement---------
+            |                               |
+            |                               |
+            --------compound_statements------
             |                               |
             |                               |
             ------------empty---------------
@@ -208,6 +211,19 @@ class Parser(object):
             self.consume(COLON)
             self.current_token.value = self.output_statement()
             node = Output(self.current_token)
+        elif self.current_token.type == IF:
+            if_block = self.current_token
+            self.consume(IF)
+            self.consume(LEFT_PAREN)
+            expression = self.expr()
+            self.consume(RIGHT_PAREN)
+            # if statement is a compound statement within another START-STOP block
+            if_block.value = self.compound_statements()
+            else_block = None  # else block is optional
+            if self.current_token.type == ELSE:
+                self.consume(ELSE)
+                else_block = self.compound_statements()
+            node = IfElse(if_block, expression, else_block)
         else:
             node = self.empty()
         return node
