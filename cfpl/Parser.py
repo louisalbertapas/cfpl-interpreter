@@ -44,7 +44,7 @@ class Parser(object):
 
     def factor(self):
         """
-        factor : PLUS factor | MINUS factor | INT_CONST | FLOAT_CONST
+        factor : PLUS factor | MINUS factor | NOT factor | INT_CONST | FLOAT_CONST
                 | CHAR_CONST | BOOL_CONST | LEFT_PAREN expr RIGHT_PAREN |
                 | SINGLE_QUOTE expr SINGLE_QUOTE | DOUBLE_QUOTE expr DOUBLE_QUOTE | variable
         """
@@ -55,6 +55,10 @@ class Parser(object):
             return node
         elif token.type == MINUS:
             self.consume(MINUS)
+            node = UnaryOp(token, self.factor())
+            return node
+        elif token.type == NOT:
+            self.consume(NOT)
             node = UnaryOp(token, self.factor())
             return node
         elif token.type == INT_CONST:
@@ -88,11 +92,11 @@ class Parser(object):
 
     def term(self):
         """
-        term : factor ((MUL | DIV | MOD) factor)*
+        term : factor ((MUL | DIV | MOD | AND | OR) factor)*
         """
         node = self.factor()
 
-        while self.current_token.type in (MUL, DIV, MOD):
+        while self.current_token.type in (MUL, DIV, MOD, AND, OR):
             token = self.current_token
             if token.type == MUL:
                 self.consume(MUL)
@@ -100,6 +104,10 @@ class Parser(object):
                 self.consume(DIV)
             elif token.type == MOD:
                 self.consume(MOD)
+            elif token.type == AND:
+                self.consume(AND)
+            elif token.type == OR:
+                self.consume(OR)
 
             node = BinOp(left=node, op=token, right=self.factor())
 
@@ -107,11 +115,20 @@ class Parser(object):
 
     def expr(self):
         """
-        expr   : term ((PLUS | MINUS | ASSIGN) term)*
+        expr   : term ((PLUS |
+                        MINUS |
+                        ASSIGN |
+                        GREATER_THAN |
+                        GREATER_EQUAL |
+                        LESSER_THAN |
+                        LESSER_EQUAL |
+                        EQUAL |
+                        NOT_EQUAL) term)*
         """
         node = self.term()
 
-        while self.current_token.type in (PLUS, MINUS, ASSIGN):
+        while self.current_token.type in (PLUS, MINUS, ASSIGN, GREATER_THAN, GREATER_EQUAL, LESSER_THAN,
+                                          LESSER_EQUAL, EQUAL, NOT_EQUAL):
             token = self.current_token
             if token.type == PLUS:
                 self.consume(PLUS)
@@ -119,6 +136,18 @@ class Parser(object):
                 self.consume(MINUS)
             elif token.type == ASSIGN:
                 self.consume(ASSIGN)
+            elif token.type == GREATER_THAN:
+                self.consume(GREATER_THAN)
+            elif token.type == GREATER_EQUAL:
+                self.consume(GREATER_EQUAL)
+            elif token.type == LESSER_THAN:
+                self.consume(LESSER_THAN)
+            elif token.type == LESSER_EQUAL:
+                self.consume(LESSER_EQUAL)
+            elif token.type == EQUAL:
+                self.consume(EQUAL)
+            elif token.type == NOT_EQUAL:
+                self.consume(NOT_EQUAL)
 
             node = BinOp(left=node, op=token, right=self.term())
 

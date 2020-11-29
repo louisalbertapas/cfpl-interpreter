@@ -95,6 +95,22 @@ class Interpreter(NodeVisitor):
             if type(node.right).__name__ == 'variable_id' and node.right.value in self.SYMBOL_TABLE_VALUE:
                 self.add_variable_value_to_symbol_table(node.right.value, node.value)
             return value
+        elif node.op.type == GREATER_THAN:
+            return self.visit(node.left) > self.visit(node.right)
+        elif node.op.type == GREATER_EQUAL:
+            return self.visit(node.left) >= self.visit(node.right)
+        elif node.op.type == LESSER_THAN:
+            return self.visit(node.left) < self.visit(node.right)
+        elif node.op.type == LESSER_EQUAL:
+            return self.visit(node.left) <= self.visit(node.right)
+        elif node.op.type == EQUAL:
+            return self.visit(node.left) == self.visit(node.right)
+        elif node.op.type == NOT_EQUAL:
+            return not (self.visit(node.left) == self.visit(node.right))
+        elif node.op.type == AND:
+            return self.visit(node.left) and self.visit(node.right)
+        elif node.op.type == OR:
+            return self.visit(node.left) or self.visit(node.right)
 
     def visit_unary_op(self, node):
         op = node.op.type
@@ -102,6 +118,8 @@ class Interpreter(NodeVisitor):
             return self.visit(node.expr) * 1
         elif op == MINUS:
             return self.visit(node.expr) * -1
+        elif node.op.type == NOT:
+            return not self.visit(node.expr)
 
     def visit_no_op(self, node):
         pass

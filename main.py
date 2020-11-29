@@ -15,7 +15,7 @@ from cfpl.Interpreter import Interpreter
 from tests.test_cases import *
 from constants.debug import *
 
-text = test_7
+text = test_8
 tokenizer = Tokenizer(text)
 if print_token:
     while True:
@@ -34,6 +34,6 @@ result = interpreter.interpret()
 if debug:
     print("SYMBOL_TABLE_TYPE: " + interpreter.SYMBOL_TABLE_TYPE.__str__())
     print("SYMBOL_TABLE_VALUE: " + interpreter.SYMBOL_TABLE_VALUE.__str__())
-if test_7_assert:
-    assert (interpreter.SYMBOL_TABLE_TYPE == test_7_assert_1)
-    assert (interpreter.SYMBOL_TABLE_VALUE == test_7_assert_2)
+if test_8_assert:
+    assert (interpreter.SYMBOL_TABLE_TYPE == test_8_assert_1)
+    assert (interpreter.SYMBOL_TABLE_VALUE == test_8_assert_2)

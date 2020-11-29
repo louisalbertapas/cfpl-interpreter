@@ -131,3 +131,20 @@ STOP
 
 test_7_assert_1 = {'xyz': 'INT', 'abc': 'INT'}
 test_7_assert_2 = {'xyz': -60, 'abc': 100}
+
+"""
+testcase 8
+"""
+test_8 = """
+VAR a=100, b=200, c=300 AS INT
+VAR d="FALSE", e="TRUE" AS BOOL
+START
+d = (a < b AND c <>200)
+e = NOT d
+OUTPUT: d
+STOP
+
+"""
+
+test_8_assert_1 = {'a': 'INT', 'b': 'INT', 'c': 'INT', 'd': 'BOOL', 'e': 'BOOL'}
+test_8_assert_2 = {'a': 100, 'b': 200, 'c': 300, 'd': True, 'e': False}

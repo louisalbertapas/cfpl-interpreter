@@ -16,6 +16,6 @@ RESERVED_KEYWORDS = {
     'OR': Token(OR, OR),
     'NOT': Token(NOT, NOT),
     'IF': Token(IF, IF),
-    'ELSE' : Token(ELSE, ELSE),
-    'WHILE' : Token(WHILE, WHILE)
+    'ELSE': Token(ELSE, ELSE),
+    'WHILE': Token(WHILE, WHILE)
 }
