@@ -142,3 +142,14 @@ class IfElse(AST):
         self.value = if_token.value
         self.expr = expr
         self.else_token = else_token
+
+
+class While(AST):
+    """
+    While node executes a compound statement until the boolean expression is false
+    """
+    def __init__(self, token, expr):
+        self.name = "while"
+        self.token = token
+        self.value = token.value
+        self.expr = expr

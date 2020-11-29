@@ -180,3 +180,25 @@ STOP
 
 test_9_assert_1 = {'a': 'INT', 'b': 'INT', 'c': 'INT', 'd': 'BOOL', 'e': 'BOOL'}
 test_9_assert_2 = {'a': 100, 'b': 200, 'c': 300, 'd': True, 'e': False}
+
+"""
+testcase 10
+"""
+test_10 = """
+VAR i=10 AS INT
+START
+WHILE (i >= 0)
+START
+OUTPUT: i
+IF (i == 0)
+START
+OUTPUT: "End of loop!"
+STOP
+i = i - 1
+STOP
+STOP
+
+"""
+
+test_10_assert_1 = {'i': 'INT'}
+test_10_assert_2 = {'i': -1}

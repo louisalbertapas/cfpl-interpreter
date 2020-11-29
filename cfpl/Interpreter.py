@@ -197,7 +197,8 @@ class Interpreter(NodeVisitor):
 
     def visit_if_else(self, node):
         bool_expr = self.visit(node.expr)
-        print(bool_expr)
+        if debug:
+            print(bool_expr)
         if bool_expr and bool_expr != "FALSE":  # add additional checking if not FALSE
             values = [node.value]
             if type(node.value).__name__ == 'list':
@@ -209,6 +210,22 @@ class Interpreter(NodeVisitor):
         else:
             if node.else_token is not None:
                 self.visit(node.else_token)
+        return node.value
+
+    def visit_while(self, node):
+        while True:
+            bool_expr = self.visit(node.expr)
+            if not bool_expr or bool_expr == "FALSE":
+                # end while loop
+                break
+            values = [node.value]
+            if type(node.value).__name__ == 'list':
+                values = []
+                for val in node.value:
+                    values.append(val)
+            for val in values:
+                self.visit(val)
+
         return node.value
 
     def visit_variable_declaration(self, node):
@@ -238,8 +255,9 @@ class Interpreter(NodeVisitor):
             else:
                 # VariableId
                 default_value = node_default_value.value
-                print(node.var_type_node.token.value)
-                print(node.var_type_node.value)
+                if debug:
+                    print(node.var_type_node.token.value)
+                    print(node.var_type_node.value)
 
         # Add to the SYMBOL_TABLE_TYPE the var_id and its corresponding var_type
         self.SYMBOL_TABLE_TYPE[node.var_id_node.value] = node.var_type_node.value

@@ -224,6 +224,15 @@ class Parser(object):
                 self.consume(ELSE)
                 else_block = self.compound_statements()
             node = IfElse(if_block, expression, else_block)
+        elif self.current_token.type == WHILE:
+            while_block = self.current_token
+            self.consume(WHILE)
+            self.consume(LEFT_PAREN)
+            expression = self.expr()
+            self.consume(RIGHT_PAREN)
+            # while statement is a compound statement within another START-STOP block
+            while_block.value = self.compound_statements()
+            node = While(while_block, expression)
         else:
             node = self.empty()
         return node
