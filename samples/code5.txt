@@ -2,7 +2,7 @@ VAR i=10 AS INT
 START
 WHILE (i >= 0)
 START
-OUTPUT: i
+OUTPUT: i & "#"
 IF (i == 0)
 START
 OUTPUT: "End of loop!"

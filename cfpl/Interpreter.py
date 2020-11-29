@@ -25,6 +25,7 @@ class NodeVisitor(object):
 class Interpreter(NodeVisitor):
     def __init__(self, parser):
         self.parser = parser
+        self.output = ''
 
         # Store variables in these dictionaries
         # 'ID' : type
@@ -167,7 +168,6 @@ class Interpreter(NodeVisitor):
             self.add_variable_value_to_symbol_table(var_name, self.visit(node.right))
 
     def visit_output(self, node):
-        output = ''
         for val in node.value:
             if val.name == 'variable_id':
                 if val.value not in self.SYMBOL_TABLE_VALUE:
@@ -191,8 +191,7 @@ class Interpreter(NodeVisitor):
                     val = str(val)
             else:
                 val = val.value
-            output += str(val)
-        print(output)
+            self.output += str(val)
         return node.value
 
     def visit_if_else(self, node):

@@ -24,6 +24,7 @@ if production:
     interpreter = Interpreter(parser)
     try:
         result = interpreter.interpret()
+        print(interpreter.output)
     except Exception as e:
         print(e)
 else:
