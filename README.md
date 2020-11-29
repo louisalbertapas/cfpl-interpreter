@@ -141,19 +141,19 @@ START
   e = NOT d
   IF (d)
   START
-    OUTPUT: "IF BLOCK"
+    OUTPUT: "IF BLOCK#"
   STOP
   ELSE
   START
-    OUTPUT: "ELSE BLOCK"
+    OUTPUT: "ELSE BLOCK#"
   STOP
   IF (c <> 300)
   START
-    OUTPUT: "IF BLOCK"
+    OUTPUT: "IF BLOCK#"
   STOP
   ELSE
   START
-    OUTPUT: "ELSE BLOCK"
+    OUTPUT: "ELSE BLOCK#"
   STOP
 STOP
 ```
@@ -162,6 +162,7 @@ STOP
 ```
 IF BLOCK
 ELSE BLOCK
+
 ```
 
 ##### Program 5
@@ -170,7 +171,7 @@ VAR i=10 AS INT
 START
 WHILE (i >= 0)
   START
-    OUTPUT: i
+    OUTPUT: i & "#"
     IF (i == 0)
     START
       OUTPUT: "End of loop!"
