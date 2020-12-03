@@ -8,7 +8,9 @@
     <form action="" method="post">
         <p>
             <!-- <input type="text" name="username"> -->
-            <textarea name="code_in" cols="50" rows="10">{{ message }}</textarea>
+            <textarea name="code_in" cols="50" rows="10" placeholder="Code here: ">{{ message }}</textarea>
+            <br>
+            <textarea name="input_in" cols="50" rows="2" placeholder="Input area: (separated by comma)">{{ input }}</textarea>
         </p>
         <p>
             <input type="submit">

@@ -44,6 +44,7 @@ else:
     # interprets the Abstract Syntax Tree using visitor pattern
     interpreter = Interpreter(parser)
     result = interpreter.interpret()
+    print(interpreter.output)
     if debug:
         print("SYMBOL_TABLE_TYPE: " + interpreter.SYMBOL_TABLE_TYPE.__str__())
         print("SYMBOL_TABLE_VALUE: " + interpreter.SYMBOL_TABLE_VALUE.__str__())

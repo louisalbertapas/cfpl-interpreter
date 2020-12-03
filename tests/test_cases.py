@@ -189,10 +189,10 @@ VAR i=10 AS INT
 START
 WHILE (i >= 0)
 START
-OUTPUT: i
+OUTPUT: i & "#"
 IF (i == 0)
 START
-OUTPUT: "End of loop!"
+OUTPUT: "End of loop!#"
 STOP
 i = i - 1
 STOP
@@ -202,3 +202,15 @@ STOP
 
 test_10_assert_1 = {'i': 'INT'}
 test_10_assert_2 = {'i': -1}
+
+"""
+testcase 11
+"""
+test_11 = """
+VAR x,y AS INT
+START
+INPUT: x,y
+OUTPUT: x & y
+STOP
+
+"""

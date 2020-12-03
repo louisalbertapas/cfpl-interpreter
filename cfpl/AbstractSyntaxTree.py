@@ -153,3 +153,13 @@ class While(AST):
         self.token = token
         self.value = token.value
         self.expr = expr
+
+
+class Input(AST):
+    """
+    An input node contains the variable ID that requires user input
+    """
+    def __init__(self, token):
+        self.name = "input"
+        self.token = token
+        self.value = token.value

@@ -26,6 +26,7 @@ class Interpreter(NodeVisitor):
     def __init__(self, parser):
         self.parser = parser
         self.output = ''
+        self.input = []
 
         # Store variables in these dictionaries
         # 'ID' : type
@@ -193,6 +194,14 @@ class Interpreter(NodeVisitor):
                 val = val.value
             self.output += str(val)
         return node.value
+
+    def visit_input(self, node):
+        i = 0
+        if len(node.value) != len(self.input):
+            raise NameError("Incorrect number of input parameters")
+        for val in node.value:
+            self.add_variable_value_to_symbol_table(val.value, self.input[i])
+            i += 1
 
     def visit_if_else(self, node):
         bool_expr = self.visit(node.expr)

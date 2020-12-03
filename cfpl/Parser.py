@@ -153,6 +153,25 @@ class Parser(object):
 
         return node
 
+    def input_statement(self):
+        """
+        An input statement rule accepts at least one variable ID and assign the input to the respective
+        variable
+        input_statement : INPUT: ID (COMMA ID)*
+        """
+        # Create a node for the first Variable ID
+        node = VariableId(self.current_token)
+        var_id_nodes = [node]
+        self.consume(ID)
+        # Loop to create nodes for other input (if there is)
+        while self.current_token.type == COMMA:
+            self.consume(COMMA)
+            node = VariableId(self.current_token)
+            var_id_nodes.append(node)
+            self.consume(ID)
+
+        return var_id_nodes
+
     def output_statement(self):
         """
         An output statement rule accepts an expr and can be optionally concatenated with another expr
@@ -199,6 +218,9 @@ class Parser(object):
             --------output_statement---------
             |                               |
             |                               |
+            ---------input_statement---------
+            |                               |
+            |                               |
             --------compound_statements------
             |                               |
             |                               |
@@ -233,6 +255,11 @@ class Parser(object):
             # while statement is a compound statement within another START-STOP block
             while_block.value = self.compound_statements()
             node = While(while_block, expression)
+        elif self.current_token.type == INPUT:
+            self.consume(INPUT)
+            self.consume(COLON)
+            self.current_token.value = self.input_statement()
+            node = Input(self.current_token)
         else:
             node = self.empty()
         return node
