@@ -16,7 +16,7 @@ class Parser(object):
         self.current_token = self.tokenizer.get_next_token()
 
     def error(self):
-        raise Exception('Invalid syntax')
+        raise Exception('Invalid syntax at line ' + str(self.tokenizer.line + 1))
 
     def consume(self, token_type):
         # compare the current token type with the passed token
@@ -32,7 +32,7 @@ class Parser(object):
         """
         variable : ID
         """
-        node = VariableId(self.current_token)
+        node = VariableId(self.current_token, self.tokenizer.line)
         self.consume(ID)
         return node
 
@@ -160,15 +160,17 @@ class Parser(object):
         input_statement : INPUT: ID (COMMA ID)*
         """
         # Create a node for the first Variable ID
-        node = VariableId(self.current_token)
+        node = VariableId(self.current_token, self.tokenizer.line)
         var_id_nodes = [node]
         self.consume(ID)
         # Loop to create nodes for other input (if there is)
         while self.current_token.type == COMMA:
             self.consume(COMMA)
-            node = VariableId(self.current_token)
+            node = VariableId(self.current_token, self.tokenizer.line)
             var_id_nodes.append(node)
             self.consume(ID)
+            if self.current_token.type == STOP or self.current_token.type == EOF:
+                break
 
         return var_id_nodes
 
@@ -259,7 +261,7 @@ class Parser(object):
             self.consume(INPUT)
             self.consume(COLON)
             self.current_token.value = self.input_statement()
-            node = Input(self.current_token)
+            node = Input(self.current_token, self.tokenizer.line)
         else:
             node = self.empty()
         return node
@@ -340,7 +342,7 @@ class Parser(object):
         """
 
         # Create a node for the first Variable ID
-        node = VariableId(self.current_token)
+        node = VariableId(self.current_token, self.tokenizer.line)
         var_id_nodes = [node]
         self.consume(ID)
 
@@ -355,7 +357,7 @@ class Parser(object):
         # Loop to create nodes for other declaration (if there is)
         while self.current_token.type == COMMA:
             self.consume(COMMA)
-            node = VariableId(self.current_token)
+            node = VariableId(self.current_token, self.tokenizer.line)
             var_id_nodes.append(node)
             self.consume(ID)
 
@@ -417,7 +419,7 @@ class Parser(object):
 
         statements : statement | statement statements
 
-        statement : assignment_statement | output_statement
+        statement : assignment_statement | output_statement | input_statement
 
         assignment_statement : variable ASSIGN expr
 

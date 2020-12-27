@@ -2,6 +2,7 @@
 from cfpl.Tokenizer import Tokenizer
 from cfpl.Parser import Parser
 from cfpl.Interpreter import Interpreter
+from constants.debug import  *
 
 # flask imports
 from flask import Flask, render_template, request
@@ -15,6 +16,15 @@ def interpret_code():
     input_param = ''
     if request.method == 'POST':
         code = request.form.get('code_in')  # access the data inside
+        tokenizer = Tokenizer(code)
+
+        if print_token:
+            while True:
+                token = tokenizer.get_next_token()
+                print(token)
+                if token.__str__() == "Token(EOF, None)":
+                    break
+
         tokenizer = Tokenizer(code)
         parser = Parser(tokenizer)
         interpreter = Interpreter(parser)

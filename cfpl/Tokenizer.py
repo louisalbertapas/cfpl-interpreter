@@ -32,7 +32,7 @@ class Tokenizer(object):
                 return self.next_line()
             else:
                 self.pos = 0
-                self.text = ' ' + self.lines[self.line]  # MUST add space before or after
+                self.text = self.lines[self.line]
                 self.current_char = self.text[self.pos]
         else:
             self.current_char = None

@@ -1,7 +1,7 @@
-VAR a=100, b=200, c=300 AS INT
+VAR a=400, b=200, c=300 AS INT
 VAR d="FALSE", e="TRUE" AS BOOL
 START
-d = (a < b AND c <>200)
+d = ((a < b)AND(c<>200))
 e = NOT d
-OUTPUT: d
+OUTPUT: d & "#" & e
 STOP

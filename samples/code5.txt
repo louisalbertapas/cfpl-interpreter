@@ -1,12 +1,8 @@
-VAR i=10 AS INT
+VAR i AS INT
+VAR f AS FLOAT
+VAR c AS CHAR
+VAR b AS BOOL
 START
-WHILE (i >= 0)
-START
-OUTPUT: i & "#"
-IF (i == 0)
-START
-OUTPUT: "End of loop!"
-STOP
-i = i - 1
-STOP
+INPUT: i,f,c,b
+OUTPUT: i & "#" & f & "#" & c & "#" & b
 STOP

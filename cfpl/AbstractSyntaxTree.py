@@ -74,10 +74,11 @@ class VariableId(AST):
     """
     VariableId node is mapped with the ID token
     """
-    def __init__(self, token):
+    def __init__(self, token, line):
         self.name = "variable_id"
         self.token = token
         self.value = token.value
+        self.line = line
         self.default_value = None
 
 
@@ -159,7 +160,8 @@ class Input(AST):
     """
     An input node contains the variable ID that requires user input
     """
-    def __init__(self, token):
+    def __init__(self, token, line):
         self.name = "input"
         self.token = token
         self.value = token.value
+        self.line = line

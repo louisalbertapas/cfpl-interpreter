@@ -144,7 +144,7 @@ class Interpreter(NodeVisitor):
             variable_value = self.SYMBOL_TABLE_VALUE[variable_id]
             return variable_value
         except KeyError:
-            raise NameError('Name ' + repr(variable_id) + ' is not defined')
+            raise NameError('Name ' + repr(variable_id) + ' is not defined at line ' + str(node.line + 1))
 
     def visit_program_start(self, node):
         for declaration in node.declarations:
@@ -165,14 +165,14 @@ class Interpreter(NodeVisitor):
         for val in values:
             var_name = val.value
             if val.token.type != STRING_CONST and var_name not in self.SYMBOL_TABLE_VALUE:
-                raise NameError('Name ' + repr(var_name) + ' is not defined')
+                raise NameError('Name ' + repr(var_name) + ' is not defined at line ' + str(val.line + 1))
             self.add_variable_value_to_symbol_table(var_name, self.visit(node.right))
 
     def visit_output(self, node):
         for val in node.value:
             if val.name == 'variable_id':
                 if val.value not in self.SYMBOL_TABLE_VALUE:
-                    raise NameError('Name ' + repr(val.value) + ' is not defined')
+                    raise NameError('Name ' + repr(val.value) + ' is not defined at line ' + str(val.line + 1))
                 val_name = val.value
                 val = self.SYMBOL_TABLE_VALUE[val_name]
                 data_type = self.SYMBOL_TABLE_TYPE[val_name]
@@ -198,15 +198,16 @@ class Interpreter(NodeVisitor):
     def visit_input(self, node):
         i = 0
         if len(node.value) != len(self.input):
-            raise NameError("Incorrect number of input parameters")
+            raise NameError("Incorrect number of input parameters. Error in line " + str(node.line))
         for val in node.value:
             self.add_variable_value_to_symbol_table(val.value, self.input[i])
             i += 1
 
+        self.input = []
+        return node.value
+
     def visit_if_else(self, node):
         bool_expr = self.visit(node.expr)
-        if debug:
-            print(bool_expr)
         if bool_expr and bool_expr != "FALSE":  # add additional checking if not FALSE
             values = [node.value]
             if type(node.value).__name__ == 'list':
@@ -263,9 +264,6 @@ class Interpreter(NodeVisitor):
             else:
                 # VariableId
                 default_value = node_default_value.value
-                if debug:
-                    print(node.var_type_node.token.value)
-                    print(node.var_type_node.value)
 
         # Add to the SYMBOL_TABLE_TYPE the var_id and its corresponding var_type
         self.SYMBOL_TABLE_TYPE[node.var_id_node.value] = node.var_type_node.value
