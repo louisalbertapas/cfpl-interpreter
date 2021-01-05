@@ -6,21 +6,23 @@ An interpreter for CFPL (CIT-University's First Programming Language)
 ### Introduction
 ```
 CFPL is a very simple programming language that allows the programmer to achieve fluency in minutes.
-It is a strongly typed programming language.  It is intended for students enrolled in programming languages.
+It is a strongly typed programming language. 
+It is intended for students enrolled in programming languages.
 It aims to train them on how to build a pure interpreter. 
 ```
 
 ### Language Grammar
 ```
 Program Structure:
-every line contains a single statement
-all variable declaration is found on top of the program
-a line that starts with asterisk(*) is considered as a comment and comment can be found in any part of the program
-executable code should be found inside the START and STOP block
-all reserved words are in capital letters
-sharp sign(#) signifies next line or carriage return
-ampersand(&) serves as a concatenator
-the square braces([]) are as escape code
+1. Every line contains a single statement
+2. All variable declaration is found on top of the program
+3. A line that starts with asterisk(*) is considered as a comment and comment can be found in any
+   part of the program
+4. executable code should be found inside the START and STOP block
+5. all reserved words are in capital letters
+6. sharp sign(#) signifies next line or carriage return
+7. ampersand(&) serves as a concatenator
+8. the square braces([]) are as escape code
 
 Data Types:
   INT – an ordinary number with no decimal part. It uses 32 bits. It can be positive or negative.
